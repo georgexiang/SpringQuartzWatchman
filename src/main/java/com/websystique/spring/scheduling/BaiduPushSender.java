@@ -14,6 +14,8 @@ import com.baidu.yun.push.exception.PushClientException;
 import com.baidu.yun.push.exception.PushServerException;
 import com.baidu.yun.push.model.PushMsgToAllRequest;
 import com.baidu.yun.push.model.PushMsgToAllResponse;
+import com.baidu.yun.push.model.PushMsgToTagRequest;
+import com.baidu.yun.push.model.PushMsgToTagResponse;
 
 /**
  *
@@ -43,18 +45,32 @@ public class BaiduPushSender {
 
 		try {
 			// 4. specify request arguments
-			PushMsgToAllRequest request = new PushMsgToAllRequest()
-					.addMsgExpires(new Integer(3600)).addMessageType(1)
-//					.addMessage("111 Hello Air Monitor") //发送消息
-                                        .addMessage("{\"title\":\""+title+"\",\"description\":\""+description+"\"}")
-//					.addSendTime(System.currentTimeMillis() / 1000 +120) // 设置定时推送时间，必需超过当前时间一分钟，单位秒.实例2分钟后推送
+//			PushMsgToAllRequest request = new PushMsgToAllRequest()
+//					.addMsgExpires(new Integer(3600)).addMessageType(1)
+////					.addMessage("111 Hello Air Monitor") //发送消息
+//                                        .addMessage("{\"title\":\""+title+"\",\"description\":\""+description+"\"}")
+////					.addSendTime(System.currentTimeMillis() / 1000 +120) // 设置定时推送时间，必需超过当前时间一分钟，单位秒.实例2分钟后推送
+//					.addDeviceType(3);
+//			// 5. http request
+//			PushMsgToAllResponse response = pushClient.pushMsgToAll(request);
+//			// Http请求结果解析打印
+                        
+                        // pushTagTpye = 1 for common tag pushing
+			PushMsgToTagRequest request = new PushMsgToTagRequest()
+					.addTagName("air")
+					.addMsgExpires(new Integer(3600))
+					.addMessageType(1)  // 添加透传消息
+					// .addSendTime(System.currentTimeMillis() / 1000 + 120) //设置定时任务
+                                        .addMessage("{\"title\":\""+title+"\",\"description\":\""+description+"\"}")  
+//					.addMessage("Hello Baidu push")
 					.addDeviceType(3);
 			// 5. http request
-			PushMsgToAllResponse response = pushClient.pushMsgToAll(request);
-			// Http请求结果解析打印
+			PushMsgToTagResponse response = pushClient.pushMsgToTag(request);
+                        
 			System.out.println("msgId: " + response.getMsgId() + ",sendTime: "
 					+ response.getSendTime() + ",timerId: "
 					+ response.getTimerId());
+                        
 		} catch (PushClientException e) {
 			if (BaiduPushConstants.ERROROPTTYPE) {
 				throw e;
